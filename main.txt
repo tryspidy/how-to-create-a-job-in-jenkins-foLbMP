@@ -1,0 +1,70 @@
+How did you create a Job in jenkins? 
+In my company devops team maintains 
+the jenkins and as a tester my jenkins
+account user do not have enough privilege 
+to create new jobs. I provide them server
+specifications which means minimum capacity
+of the jenkins server (maven, java 8, browser
+types(chrome, firefox or what you need), OS(Mac-Windows), etc).
+I can only run the jobs and see the results. 
+To create my smoke tests on jenkins I created 
+a ticket in jira for the devops team. 
+But also know how to create and configure 
+jenkins jobs myself. 
+I have done it in my previous projects. 
+
+How you configure a job(build) in Jenkins?
+As a test engineer I only configured 
+my smoke tests on jenkins. 
+how we configure our smoke test also depend
+s on what tools we have in our framework.
+I have a cucumber + junit + maven framework. 
+So this is how that job is configured:
+
+1. Source Code Management
+Here we specify where to get the code from.
+we put the link of our GitHub repo 
+and also enter the credentials
+
+2. Build Triggers
+We specify how often we run those tests.
+we choose Build periodically because we
+want to run in certain schedule. 
+in my project, we run smoke tests every morning.
+so in the build trigger we entered daily option:
+H 6 * * * --> every day around 6 am.
+Jenkins used a cron expression, and the different fields are:
+
+  H * * * *   ==> Build every hour at any minute (6.12 am, 8.38pm)
+  0 * * * *   ==> Build every hour at exactly on the hour (6.00 am, 8.00pm)
+  0 8 * * *   ==> Build every day exactly 8.00 am
+  H/5 * * * * ==> Build every 5 minutes
+  H 6 * * 1-5 ==> Build around 6 am from first day of the week (Monday) to 5th day (Friday)
+  H 1 * 6,20 * * ==> Build on 6th and 20th day of the month around 1 am for regression
+
+3. Build
+Here we enter the details of the actual Run.
+since my project is based on maven, 
+I choose option: Invoke top-level maven targets
+then I choose which maven to run from the
+version dropdown. in the next field, 
+I enter the maven goal: verify. in this field
+we do not need to enter the word mvn.
+I can also mention here which tag or which
+runner class I want to run. So the command will be:
+	verify -Dcucumber.options="--tags @smoke"       ==> for smoke test
+	verify -Dcucumber.options="--tags @regression"  ==> for regression test
+
+4. Add Post-build Actions
+In the post build actions, we configure
+what we want to do after build. after
+each test we generate report and email
+a. report
+We generate report using Cucumber reports plugin.
+I select Cucumber reports plugin from the
+Post-build Actions to generate reports. 
+b. Email
+Using the email plugin we can send email
+after every build. I select Editable Email
+Notification option from the Post-build
+Actions to send emails.
